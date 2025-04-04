@@ -1,0 +1,16 @@
+# Archivos de credenciales generados automáticamente
+**/aws_credentials_*.txt
+
+# Archivos temporales y del sistema
+*.log
+*.tmp
+*.bak
+.DS_Store
+Thumbs.db
+
+# Carpetas ocultas o de configuración
+.env
+.aws/
+
+# Archivos de sistema específicos de editores
+.vscode/
