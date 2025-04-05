@@ -1,0 +1,18 @@
+[
+    {
+        "ParameterKey": "Username",
+        "ParameterValue": "usuarioejemplo"
+    },
+    {
+        "ParameterKey": "PolicyName",
+        "ParameterValue": "AmazonS3FullAccess"
+    },
+    {
+        "ParameterKey": "UserPassword",
+        "ParameterValue": "ContrasenaSegura123!"
+    },
+    {
+        "ParameterKey": "AccountAlias",
+        "ParameterValue": "aliasCuenta"
+    }
+]

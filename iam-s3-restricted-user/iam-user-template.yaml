@@ -1,0 +1,78 @@
+AWSTemplateFormatVersion: '2010-09-09' 
+Description: Plantilla AWS CloudFormation para crear usuarios IAM con permisos específicos, acceso a la consola y credenciales para CLI.
+
+Parameters: 
+  Username: 
+    Description: Nombre del usuario IAM a crear 
+    Type: String
+    MinLength: 1
+    MaxLength: 64
+    AllowedPattern: "[a-zA-Z0-9+=,.@_-]+"
+    ConstraintDescription: Debe ser un nombre válido sin espacios o caracteres especiales.
+   
+  PolicyName: 
+    Description: Nombre de la política (p.ej. AmazonS3FullAccess, AmazonEC2FullAccess)
+    Type: String
+    MinLength: 1
+    ConstraintDescription: Debe ser una política AWS válida.
+   
+  UserPassword: 
+    Description: Contraseña del usuario para la consola de administración.
+    Type: String
+    NoEcho: true
+    MinLength: 8
+    MaxLength: 128
+    ConstraintDescription: Debe tener al menos 8 caracteres incluyendo una letra mayúscula, un número y un símbolo.
+    
+  RequirePasswordReset:
+    Description: ¿Requerir cambio de contraseña en el próximo inicio de sesión?
+    Type: String
+    Default: true
+    AllowedValues:
+      - true
+      - false
+  
+  AccountAlias:
+    Description: Alias de la cuenta de AWS (por ejemplo, miempresa).
+    Type: String
+    ConstraintDescription: El alias debe coincidir con el configurado en la cuenta AWS. Por ejemplo, miempresa.
+
+
+Resources: 
+  NewUser: 
+    Type: AWS::IAM::User 
+    Properties: 
+      UserName: !Ref Username 
+      LoginProfile: 
+        Password: !Ref UserPassword
+        PasswordResetRequired: !Ref RequirePasswordReset
+      ManagedPolicyArns: 
+        - !Sub "arn:aws:iam::aws:policy/${PolicyName}"
+      Tags:
+        - Key: CreatedBy
+          Value: CloudFormation
+        - Key: CreationDate
+          Value: !Ref "AWS::StackName"
+   
+  NewAccessKey: 
+    Type: AWS::IAM::AccessKey 
+    Properties: 
+      Status: Active 
+      UserName: !Ref NewUser
+ 
+Outputs: 
+  UserName:
+    Description: Nombre del usuario IAM creado
+    Value: !Ref Username
+    
+  AccessKeyID:
+    Description: ID de la clave de acceso para AWS CLI
+    Value: !Ref NewAccessKey
+    
+  SecretAccessKey:
+    Description: Clave secreta de acceso para AWS CLI
+    Value: !GetAtt NewAccessKey.SecretAccessKey
+    
+  ConsoleLoginURL:
+    Description: URL para iniciar sesión en la consola AWS (usar con el nombre de usuario y contraseña proporcionados)
+    Value: !Sub "https://${AccountAlias}.signin.aws.amazon.com/console"

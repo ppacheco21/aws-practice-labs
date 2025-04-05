@@ -11,6 +11,7 @@ Thumbs.db
 # Carpetas ocultas o de configuración
 .env
 .aws/
+git-*.md
 
 # Archivos de sistema específicos de editores
 .vscode/
